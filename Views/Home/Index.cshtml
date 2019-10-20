@@ -1,67 +1,91 @@
-﻿@{
+﻿@using Microsoft.EntityFrameworkCore
+@model Z01.Models.IndexViewModel
+@{
     ViewData["Title"] = "Notes list";
 }
 
 <main class="main m-y-lg p-lg">
-    <section class="main__filter-container p-y-md p-lg">
-        <div class="main__date">
-            <label for="from-date-note" class="m-r-sm">From: </label>
-            <input type="date" class="form-control" id="from-date-note" aria-describedby="from-date-help">
-        </div>
-        <div class="main__date">
-            <label for="to-date-note" class="m-r-sm">To: </label>
-            <input type="date" class="form-control" id="to-date-note" aria-describedby="to-date-help">
-        </div>
-        <select name="pets" id="pet-select">
-            <option value="">--Please choose an option--</option>
-            <option value="dog">Dog</option>
-            <option value="cat">Cat</option>
-            <option value="hamster">Hamster</option>
-            <option value="parrot">Parrot</option>
-            <option value="spider">Spider</option>
-            <option value="goldfish">Goldfish</option>
-        </select>
-        <input type="button" value="Filter" class="btn btn-primary">
-        <input type="button" value="Clear" class="btn btn-primary">
-    </section>
+    <form asp-controller="Home" asp-action="Index" method="GET">
+        <section class="main__filter-container p-y-md p-lg">
+            <div class="main__date">
+                <label for="from-date-note" class="m-r-sm">From: </label>
+                <input type="date" class="form-control" name="from" id="from-date-note" aria-describedby="from-date-help" value="@($"{Model.From:yyyy-MM-dd}")">
+            </div>
+            <div class="main__date">
+                <label for="to-date-note" class="m-r-sm">To: </label>
+                <input type="date" class="form-control" name="to" id="to-date-note" aria-describedby="to-date-help" value="@($"{Model.To:yyyy-MM-dd}")">
+            </div>
+            <select name="category" id="pet-select">
+                <option value="">--Choose a category--</option>
+
+                @foreach (var category in Model.Categories)
+                {
+                    var selected = category == Model.SelectedCategory;
+                    <option value="@category" selected="@selected">@category</option>
+                }
+            </select>
+            <input type="submit" class="btn btn-primary"/>
+            <a asp-action="Index" class="btn btn-primary">Clear</a>
+        </section>
+    </form>
 
     <section class="main__notes-list m-y-md ">
         <div class="notes-list__row">
             <span>Date</span>
             <span>Title</span>
-            @* <span>Edit</span> *@
-            @* <span>Delete</span> *@
         </div>
-        <div class="notes-list__row">
-            <span>2019-10-03</span>
-            <span>Content of first lecture</span>
-            <div class="notes-list__button-wrapper">
-                <input type="button" value="Edit" class="btn bg-info"/>
+
+        @if (Model.Notes.Count == 0)
+        {
+            <div class="p-lg">
+                Ups... there is no note here. Click on <strong>New Note </strong>button to create one.
             </div>
-            <div class="notes-list__button-wrapper">
-                <input type="button" value="Delete" class="btn btn-danger"/>
+        }
+
+        @foreach (var note in Model.Notes)
+        {
+            <div class="notes-list__row">
+                <span>@note.CreationDate</span>
+                <span>@note.Title</span>
+                <div class="notes-list__button-wrapper">
+                    <a asp-controller="Home" asp-action="Index" asp-route-noteId="@note.Id" class="btn bg-info">
+                        Edit
+                    </a>
+                </div>
+                <div class="notes-list__button-wrapper">
+                    <form asp-controller="Home" asp-action="About" method="POST">
+                        <input type="submit" value="Delete" class="btn bg-danger"/>
+                        <input type="hidden" value="@note.Id" name="note-id"/>
+                    </form>
+                </div>
             </div>
-        </div>
-        <div class="notes-list__row">
-            <span>2019-11-03</span>
-            <span>Very long textVery long textVery long textVery long textVery long textVery long textVery long textVery long textVery long textVery long textVery long textVery long text</span>
-            <div class="notes-list__button-wrapper">
-                <input type="button" value="Edit" class="btn bg-info"/>
-            </div>
-            <div class="notes-list__button-wrapper">
-                <input type="button" value="Delete" class="btn btn-danger"/>
-            </div>
-        </div>
+        }
     </section>
 
     <section class="main__footer">
         <div>
-            <input type="button" value="New note" class="btn btn-primary"/>
+            <a asp-action="About" class="btn btn-primary">New note</a>
         </div>
         <div>
-            <input type="button" value="Prev page" class="btn btn-primary"/>
-            <span class="m-x-sm">page 5 / 17</span>
-            <input type="button" value="Next page" class="btn btn-primary"/>
+            <a
+                asp-action="Index"
+                asp-route-category="@Model.SelectedCategory"
+                asp-route-from="@Model.From"
+                asp-route-to="@Model.To"
+                asp-route-page="@(Model.Page - 1)"
+                class="btn btn-primary">
+                Prev page
+            </a>
+            <span class="m-x-sm">page @Model.Page / 17</span>
+            <a
+                asp-action="Index"
+                asp-route-category="@Model.SelectedCategory"
+                asp-route-from="@Model.From"
+                asp-route-to="@Model.To"
+                asp-route-page="@(Model.Page + 1)"
+                class="btn btn-primary">
+                Prev page
+            </a>
         </div>
     </section>
 </main>

@@ -1,6 +1,7 @@
 .main {
     border: 1px solid black;
 }
+
 .main__filter-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
@@ -27,7 +28,7 @@
     align-items: stretch;
     align-content: center;
     
-    padding: 1em 0;
+    padding: 2em 0;
 }
 
 .notes-list__row > * {
