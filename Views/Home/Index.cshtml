@@ -1,5 +1,67 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Notes list";
 }
 
-<div>Hello world!</div>
+<main class="main m-y-lg p-lg">
+    <section class="main__filter-container p-y-md p-lg">
+        <div class="main__date">
+            <label for="from-date-note" class="m-r-sm">From: </label>
+            <input type="date" class="form-control" id="from-date-note" aria-describedby="from-date-help">
+        </div>
+        <div class="main__date">
+            <label for="to-date-note" class="m-r-sm">To: </label>
+            <input type="date" class="form-control" id="to-date-note" aria-describedby="to-date-help">
+        </div>
+        <select name="pets" id="pet-select">
+            <option value="">--Please choose an option--</option>
+            <option value="dog">Dog</option>
+            <option value="cat">Cat</option>
+            <option value="hamster">Hamster</option>
+            <option value="parrot">Parrot</option>
+            <option value="spider">Spider</option>
+            <option value="goldfish">Goldfish</option>
+        </select>
+        <input type="button" value="Filter" class="btn btn-primary">
+        <input type="button" value="Clear" class="btn btn-primary">
+    </section>
+
+    <section class="main__notes-list m-y-md ">
+        <div class="notes-list__row">
+            <span>Date</span>
+            <span>Title</span>
+            @* <span>Edit</span> *@
+            @* <span>Delete</span> *@
+        </div>
+        <div class="notes-list__row">
+            <span>2019-10-03</span>
+            <span>Content of first lecture</span>
+            <div class="notes-list__button-wrapper">
+                <input type="button" value="Edit" class="btn bg-info"/>
+            </div>
+            <div class="notes-list__button-wrapper">
+                <input type="button" value="Delete" class="btn btn-danger"/>
+            </div>
+        </div>
+        <div class="notes-list__row">
+            <span>2019-11-03</span>
+            <span>Very long textVery long textVery long textVery long textVery long textVery long textVery long textVery long textVery long textVery long textVery long textVery long text</span>
+            <div class="notes-list__button-wrapper">
+                <input type="button" value="Edit" class="btn bg-info"/>
+            </div>
+            <div class="notes-list__button-wrapper">
+                <input type="button" value="Delete" class="btn btn-danger"/>
+            </div>
+        </div>
+    </section>
+
+    <section class="main__footer">
+        <div>
+            <input type="button" value="New note" class="btn btn-primary"/>
+        </div>
+        <div>
+            <input type="button" value="Prev page" class="btn btn-primary"/>
+            <span class="m-x-sm">page 5 / 17</span>
+            <input type="button" value="Next page" class="btn btn-primary"/>
+        </div>
+    </section>
+</main>
