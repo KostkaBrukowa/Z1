@@ -50,6 +50,9 @@
 
 .note__main__category-list {
     align-self: start;
+    overflow:auto;
+    height: 100%;
+    
     grid-area: categories-select;
 }
 
@@ -66,7 +69,7 @@
 
 @media(max-width: 768px) {
     .note__main {
-        grid-template-rows: 3em 6em 4em 4em 4em 4em 4em 4em;
+        grid-template-rows: 3em 6em 4em 4em 4em 6em 4em 4em;
 
         grid-template-areas:
                 "title-label      title-input       title-input       markdown-checkbox"
@@ -86,7 +89,7 @@
 
 @media(max-width: 430px) {
     .note__main {
-        grid-template-rows: 3em 1em 6em 4em 4em 4em 4em 4em 4em;
+        grid-template-rows: 3em 1em 6em 4em 4em 4em 6em 4em 4em;
 
         grid-template-areas:
                 "title-label      title-input       title-input       title-input"

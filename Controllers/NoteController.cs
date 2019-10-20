@@ -14,8 +14,10 @@ namespace Z01.Controllers
         }
 
         [HttpPost]
-        public IActionResult Update()
+        public IActionResult Update(string[] categories)
         {
+            Console.WriteLine($"!!!!!!!!!!!!!!!{categories.Length}");
+            Console.WriteLine($"!!!!!!!!!!!!!!!{categories[0]}");
             return Redirect("/");
         }
     }
