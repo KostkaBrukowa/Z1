@@ -1,0 +1,40 @@
+@{
+    ViewData["Title"] = "New note";
+}
+
+<form asp-controller="Note" asp-action="Update" method="POST">
+    <main class="note__main">
+        <label class="note__main__title-label" for="title">Title of note:</label>
+        <input class="note__main__title-input form-control" type="text" name="title" id="title" aria-describedby="note-title">
+        <div class="note__main__checkbox-wrapper">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> Markdown
+                </label>
+            </div>
+        </div>
+
+        <label class="note__main__content-label m-r-sm" for="content">Content of the note:</label>
+        <textarea class="note__main__content-input form-control" type="text" name="content" id="content" aria-describedby="note-content" ></textarea>
+
+        <label class="note__main__category-label" for="category-list">In Categories:</label>
+        <select name="category" id="category-list" class="note__main__category-list form-control">
+            <option value="">--Choose a category--</option>
+
+            @*             @foreach (var category in Model.Categories) *@
+            @*             { *@
+            @*                 var selected = category == Model.SelectedCategory; *@
+            @*                 <option value="@category" selected="@selected">@category</option> *@
+            @*             } *@
+        </select>
+
+        <div class="note__main__category-input-wrapper">
+            <label class="note__main__category-input-label" for="category-input">Category name:</label>
+            <input class="note__main__category-input form-control" type="text" name="category" id="title" aria-describedby="note-title">
+        </div>
+        <div class="note__main__button-group">
+            <button class="btn btn-primary">Add</button>
+            <button class="btn btn-primary">Remove</button>
+        </div>
+    </main>
+</form>

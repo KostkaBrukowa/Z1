@@ -1,0 +1,106 @@
+.note__main {
+    padding: 3em 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr 1fr;
+    grid-template-rows: 3em 6em 4em 4em 4em 6em;
+    
+    grid-row-gap: 1em;
+    grid-column-gap: 1em;
+    
+    grid-template-areas: 
+    "title-label      title-input       title-input    markdown-checkbox"
+    "content-label    content-area      content-area   content-area"
+    ".                content-area      content-area   content-area"
+    ".                content-area      content-area   content-area"
+    ".                content-area      content-area   content-area"
+    "categories-label categories-select category-input category-input-buttons";
+}
+
+.note__main > label {
+    text-align: right;
+}
+
+.note__main__title-label {
+    grid-area: title-label;
+}
+
+.note__main__title-input {
+    grid-area: title-input;
+}
+
+.note__main__checkbox-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    grid-area: markdown-checkbox;
+}
+
+.note__main__content-label {
+    grid-area: content-label;
+}
+
+.note__main__content-input {
+    align-self: stretch;
+    grid-area: content-area;
+}
+
+.note__main__category-label {
+    grid-area: categories-label;
+}
+
+.note__main__category-list {
+    align-self: start;
+    grid-area: categories-select;
+}
+
+.note__main__category-input-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-column-gap: 1em;
+    grid-area: category-input;
+}
+
+.note__main__button-group {
+    grid-area: category-input-buttons;
+}
+
+@media(max-width: 768px) {
+    .note__main {
+        grid-template-rows: 3em 6em 4em 4em 4em 4em 4em 4em;
+
+        grid-template-areas:
+                "title-label      title-input       title-input       markdown-checkbox"
+                "content-label    content-area      content-area      content-area"
+                ".                content-area      content-area      content-area"
+                ".                content-area      content-area      content-area"
+                ".                content-area      content-area      content-area"
+                "categories-label categories-select categories-select categories-select"
+                "category-input   category-input    category-input    category-input "
+                "category-input-buttons category-input-buttons  category-input-buttons  category-input-buttons";
+    }
+    
+    .note__main__button-group {
+        justify-self: end;
+    }
+}
+
+@media(max-width: 430px) {
+    .note__main {
+        grid-template-rows: 3em 1em 6em 4em 4em 4em 4em 4em 4em;
+
+        grid-template-areas:
+                "title-label      title-input       title-input       title-input"
+                ".                .                 markdown-checkbox markdown-checkbox       " 
+                "content-label    content-area      content-area      content-area"
+                ".                content-area      content-area      content-area"
+                ".                content-area      content-area      content-area"
+                ".                content-area      content-area      content-area"
+                "categories-label categories-select categories-select categories-select"
+                "category-input   category-input    category-input    category-input "
+                "category-input-buttons category-input-buttons  category-input-buttons  category-input-buttons";
+    }
+    
+    .note__main__checkbox-wrapper {
+        justify-self: end;
+    }
+}
