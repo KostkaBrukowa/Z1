@@ -15,7 +15,7 @@ namespace Z01.Repositories
             {
                 var note = NoteModel.FromString(File.ReadAllText(file), file);
 
-                allCategories.UnionWith(note.Categories);
+                allCategories.UnionWith(note.Categories.Select(c => c.ToLower()));
             }
 
             return allCategories.ToList();

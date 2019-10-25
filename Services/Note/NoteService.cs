@@ -49,7 +49,7 @@ namespace Z01.services
             var notes = _noteRepository.LoadNotes();
             var filteredNotes = notes
                 .Where(it =>
-                    filterModel.SelectedCategory == null || it.Categories.Contains(filterModel.SelectedCategory))
+                    filterModel.SelectedCategory == null || it.Categories.Contains(filterModel.SelectedCategory.ToLower()))
                 .Where(it => it.CreationDate >= filterModel.From)
                 .Where(it => it.CreationDate <= filterModel.To)
                 .ToList();
