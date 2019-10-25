@@ -44,27 +44,28 @@ namespace Z01.services
             _noteRepository.SaveNoteToDatabase(new NoteModel(note, Guid.NewGuid().ToString()));
         }
 
-        public List<NoteModel> GetAllNotes()
-        {
-            return _noteRepository.LoadNotes();
-        }
-
         public Tuple<int, List<NoteModel>> GetAllNotes(NoteFilterModel filterModel)
         {
-            var (count, notes) = _noteRepository.LoadNotes(filterModel.Page, HomeController.PAGE_SIZE);
+            var notes = _noteRepository.LoadNotes();
             var filteredNotes = notes
                 .Where(it =>
                     filterModel.SelectedCategory == null || it.Categories.Contains(filterModel.SelectedCategory))
                 .Where(it => it.CreationDate >= filterModel.From)
                 .Where(it => it.CreationDate <= filterModel.To)
                 .ToList();
+            var paginatedNotes = filteredNotes
+                .Skip(filterModel.Page * HomeController.PAGE_SIZE)
+                .Take(HomeController.PAGE_SIZE)
+                .ToList();
 
-            return new Tuple<int, List<NoteModel>>(count, filteredNotes);
+            return new Tuple<int, List<NoteModel>>(filteredNotes.Count, paginatedNotes);
         }
 
         public NoteModel GetNoteById(string id)
         {
-            return _noteRepository.LoadNotes().Find(it => it.Id == id);
+            var notes = _noteRepository.LoadNotes();
+
+            return notes.Find(it => it.Id == id);
         }
 
         public void SaveNote(NoteModel note)

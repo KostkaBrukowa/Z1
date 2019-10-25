@@ -2,6 +2,13 @@
 @model Z01.Models.IndexViewModel
 @{
     ViewData["Title"] = "Notes list";
+    var currentParams = new Dictionary<string, string>
+    {
+        {"Filters.From", $"{Model.Filters.From:yyyy-MM-dd}"},
+        {"Filters.To", $"{Model.Filters.To:yyyy-MM-dd}"},
+        {"Filters.SelectedCategory", Model.Filters.SelectedCategory},
+        {"Filters.Page", $"{Model.Filters.Page}"}
+    };
 }
 
 <main class="main m-y-lg p-lg">
@@ -63,18 +70,11 @@
         </div>
         <div>
             @{
-                var currentParams = new Dictionary<string, string>
-                {
-                    {"Filters.From", $"{Model.Filters.From:yyyy-MM-dd}"},
-                    {"Filters.To", $"{Model.Filters.To:yyyy-MM-dd}"},
-                    {"Filters.SelectedCategory", Model.Filters.SelectedCategory}
-                };
-
                 var prevPageParams = new Dictionary<string, string>(currentParams);
                 var nextPageParams = new Dictionary<string, string>(currentParams);
 
-                prevPageParams.Add("Filters.Page", $"{Model.Filters.Page - 1}");
-                nextPageParams.Add("Filters.Page", $"{Model.Filters.Page + 1}");
+                prevPageParams["Filters.Page"] = $"{int.Parse(currentParams["Filters.Page"]) - 1}";
+                nextPageParams["Filters.Page"] = $"{int.Parse(currentParams["Filters.Page"]) + 1}";
             }
             <a
                 asp-action="Index"

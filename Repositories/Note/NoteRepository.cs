@@ -15,21 +15,11 @@ namespace Z01.Repositories
 
         public List<NoteModel> LoadNotes()
         {
-            return Directory.EnumerateFiles(_path, "*.note.*")
-                .Select(file => NoteModel.FromString(File.ReadAllText(file), file))
-                .ToList();
-        }
-
-        public Tuple<int, List<NoteModel>> LoadNotes(int page, int size)
-        {
             var allFiles = Directory.EnumerateFiles(_path, "*.note.*");
 
-            return new Tuple<int, List<NoteModel>>(
-                allFiles.Count(),
-                allFiles.Skip(page * size)
+            return allFiles
                     .Select(file => NoteModel.FromString(File.ReadAllText(file), file))
-                    .Take(size)
-                    .ToList());
+                    .ToList();
         }
 
         public void SaveNoteToDatabase(NoteModel note)
