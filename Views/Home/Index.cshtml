@@ -9,22 +9,17 @@
         <section class="main__filter-container p-y-md p-lg">
             <div class="main__date">
                 <label for="from-date-note" class="m-r-sm">From: </label>
-                <input type="date" class="form-control" name="from" id="from-date-note" aria-describedby="from-date-help" value="@($"{Model.From:yyyy-MM-dd}")">
+                <input class="form-control" asp-for="@Model.Filters.From">
             </div>
             <div class="main__date">
                 <label for="to-date-note" class="m-r-sm">To: </label>
-                <input type="date" class="form-control" name="to" id="to-date-note" aria-describedby="to-date-help" value="@($"{Model.To:yyyy-MM-dd}")">
+                <input class="form-control" asp-for="@Model.Filters.To">
             </div>
-            <select name="category" id="pet-select">
+            <select asp-for="@Model.Filters.SelectedCategory" asp-items="Model.Categories">
                 <option value="">--Choose a category--</option>
-
-                @foreach (var category in Model.Categories)
-                {
-                    var selected = category == Model.SelectedCategory;
-                    <option value="@category" selected="@selected">@category</option>
-                }
             </select>
-            <input type="submit" class="btn btn-primary"/>
+            <input asp-for="Filters.Page"/>
+            <input type="submit" class="btn btn-primary" value="Filter"/>
             <a asp-action="Index" class="btn btn-primary">Clear</a>
         </section>
     </form>
@@ -45,17 +40,17 @@
         @foreach (var note in Model.Notes)
         {
             <div class="notes-list__row">
-                <span>@note.CreationDate</span>
+                <span>@($"{note.CreationDate:yyyy-MM-dd}")</span>
                 <span>@note.Title</span>
                 <div class="notes-list__button-wrapper">
-                    <a asp-controller="Home" asp-action="Index" asp-route-noteId="@note.Id" class="btn bg-info">
+                    <a asp-controller="Note" asp-action="Index" asp-route-id="@note.Id" class="btn bg-info">
                         Edit
                     </a>
                 </div>
                 <div class="notes-list__button-wrapper">
-                    <form asp-controller="Home" asp-action="About" method="POST">
+                    <form asp-controller="Note" asp-action="Remove" method="POST">
                         <input type="submit" value="Delete" class="btn bg-danger"/>
-                        <input type="hidden" value="@note.Id" name="note-id"/>
+                        <input type="hidden" value="@note.Id" name="id"/>
                     </form>
                 </div>
             </div>
@@ -67,24 +62,32 @@
             <a asp-controller="Note" asp-action="Index" class="btn btn-primary">New note</a>
         </div>
         <div>
+            @{
+                var currentParams = new Dictionary<string, string>
+                {
+                    {"Filters.From", $"{Model.Filters.From:yyyy-MM-dd}"},
+                    {"Filters.To", $"{Model.Filters.To:yyyy-MM-dd}"},
+                    {"Filters.SelectedCategory", Model.Filters.SelectedCategory}
+                };
+
+                var prevPageParams = new Dictionary<string, string>(currentParams);
+                var nextPageParams = new Dictionary<string, string>(currentParams);
+
+                prevPageParams.Add("Filters.Page", $"{Model.Filters.Page - 1}");
+                nextPageParams.Add("Filters.Page", $"{Model.Filters.Page + 1}");
+            }
             <a
                 asp-action="Index"
-                asp-route-category="@Model.SelectedCategory"
-                asp-route-from="@Model.From"
-                asp-route-to="@Model.To"
-                asp-route-page="@(Model.Page - 1)"
-                class="btn btn-primary">
+                asp-all-route-data="@prevPageParams"
+                class="btn btn-primary @(Model.Filters.Page <= 0 ? "disabled" : "")">
                 Prev page
             </a>
-            <span class="m-x-sm">page @Model.Page / 17</span>
+            <span class="m-x-sm">page @(Model.Filters.Page + 1) / @(Model.MaxPage + 1)</span>
             <a
                 asp-action="Index"
-                asp-route-category="@Model.SelectedCategory"
-                asp-route-from="@Model.From"
-                asp-route-to="@Model.To"
-                asp-route-page="@(Model.Page + 1)"
-                class="btn btn-primary">
-                Prev page
+                asp-all-route-data="@nextPageParams"
+                class="btn btn-primary @(Model.Filters.Page >= Model.MaxPage ? "disabled" : "")">
+                Next page
             </a>
         </div>
     </section>

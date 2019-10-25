@@ -1,8 +1,8 @@
 .main {
-    border: 1px solid black;
 }
 
 .main__filter-container {
+    margin-bottom: 3rem;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
     grid-column-gap: 1em;
@@ -18,6 +18,7 @@
 }
 
 .main__notes-list {
+    margin-bottom: 3rem;
     border: 1px solid black;
 }
 

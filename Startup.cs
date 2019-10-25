@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Z01.Models;
+using Z01.Repositories;
+using Z01.services;
 
 namespace Z01
 {
@@ -37,6 +41,12 @@ namespace Z01
             }
 
             app.UseStaticFiles();
+            using (var file = File.Create(NoteRepository._path + "test1"))
+            {
+                var writer = new System.Xml.Serialization.XmlSerializer(typeof(List<NoteModel>));
+
+                writer.Serialize(file, new List<NoteModel>());
+            }
 
             app.UseMvc(routes =>
             {

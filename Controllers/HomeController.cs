@@ -4,30 +4,25 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Z01.Models;
+using Z01.services;
 
 namespace Z01.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index(DateTime from, DateTime to, string category, int page = 1)
+        private readonly CategoryService _categoryService = new CategoryService();
+        private readonly NoteService _noteService = new NoteService();
+        public static int PAGE_SIZE = 5;
+
+        public IActionResult Index(NoteFilterModel filters)
         {
-            var categories = new List<string>(new string[] {"category 1", "category2"});
-            if (from == new DateTime())
-            {
-                from = DateTime.Now.AddDays(-7);
-            }
+            var (allNotesCount, notes) = _noteService.GetAllNotes(filters);
+            var categories = _categoryService.GetAllCategories();
+            var maxPages = Math.Ceiling((double) ((allNotesCount - 1) / (PAGE_SIZE)));
 
-            if (to == new DateTime())
-            {
-                to = DateTime.Now;
-            }
-
-            if (page <= 0)
-            {
-                page = 1;
-            }
-
-            return View(new IndexViewModel(from, to, categories, new List<NoteModel>(), page, category));
+            return View(
+                new IndexViewModel(filters, categories, notes, (int)maxPages
+            ));
         }
 
         [HttpGet]

@@ -1,3 +1,19 @@
+.input-validation-error {
+    border: 1px solid red;
+}
+
+.error-container {
+    margin: 3rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-label{
+   color: red;
+    font-size: 17px;
+}
+
 .note__main {
     padding: 3em 0;
     display: grid;
@@ -67,6 +83,16 @@
     grid-area: category-input-buttons;
 }
 
+.note__main__cta-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.note__main__cta-button {
+    width: 10rem;
+    margin-right: 1rem;
+}
+
 @media(max-width: 768px) {
     .note__main {
         grid-template-rows: 3em 6em 4em 4em 4em 6em 4em 4em;
@@ -107,3 +133,4 @@
         justify-self: end;
     }
 }
+

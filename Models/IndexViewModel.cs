@@ -1,39 +1,35 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Z01.Models
 {
     public class IndexViewModel
     {
-        public IndexViewModel()
+        public IndexViewModel() : this(new NoteFilterModel(), new List<string>(), new List<NoteModel>(), 0)
         {
-            From = DateTime.Today.AddDays(-1);
-            To = DateTime.Today;
-            Categories = new List<string>(new string[] {"jarek", "dominik"});
-            Notes = new List<NoteModel>(new NoteModel[]
-            {
-                new NoteModel(),
-            });
-            Page = 3;
         }
 
-        public IndexViewModel(DateTime from, DateTime to, List<string> categories, List<NoteModel> notes, int page,
-            string selectedCategory)
+        public IndexViewModel(NoteFilterModel filters, IEnumerable<string> categories, List<NoteModel> notes, int maxPage)
         {
-            From = from;
-            To = to;
-            Categories = categories;
+            Filters = filters.TrimPages(maxPage);
             Notes = notes;
-            Page = page;
-            SelectedCategory = selectedCategory;
+            MaxPage = maxPage;
+            Categories = new List<SelectListItem>();
+
+            foreach (var category in categories)
+            {
+                Categories.Add(new SelectListItem {Value = category, Text = category});
+            }
         }
 
-        public string Id { get; }
-        public DateTime From { get; }
-        public DateTime To { get; }
-        public List<string> Categories { get; }
-        public List<NoteModel> Notes { get; }
-        public int Page { get; }
-        public string SelectedCategory { get; }
+        public List<SelectListItem> Categories { get; set; }
+
+        public NoteFilterModel Filters { get; set; }
+
+        public List<NoteModel> Notes { get; set; }
+
+        public int MaxPage { get; set; }
     }
 }

@@ -1,38 +1,49 @@
+@model NoteModel
+
 @{
     ViewData["Title"] = "New note";
 }
 
-<form asp-controller="Note" asp-action="Update" method="POST">
+<form asp-controller="Note" asp-action="Save" method="POST">
+    <div class="error-container">
+        <span class="error-label" asp-validation-for="Title"> </span>
+        <span class="error-label" asp-validation-for="Content"> </span>
+        <span class="error-label" asp-validation-for="Categories"> </span>
+    </div>
     <main class="note__main">
-        <label class="note__main__title-label" for="title">Title of note:</label>
-        <input class="note__main__title-input form-control" type="text" name="title" id="title" aria-describedby="note-title">
+        <label class="note__main__title-label" asp-for="Title">Title of note:</label>
+        <input class="note__main__title-input form-control" type="text" aria-describedby="note-title" asp-for="Title">
         <div class="note__main__checkbox-wrapper">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox"> Markdown
+                    <input type="checkbox" asp-for="Markdown"> Markdown
                 </label>
             </div>
         </div>
 
         <label class="note__main__content-label m-r-sm" for="content">Content of the note:</label>
-        <textarea class="note__main__content-input form-control" type="text" name="content" id="content" aria-describedby="note-content" ></textarea>
+        <textarea class="note__main__content-input form-control" type="text"  aria-describedby="note-content" asp-for="Content"></textarea>
         <label class="note__main__category-label" for="category-list">In Categories:</label>
         <div name="category" id="category-list" class="note__main__category-list form-control">
-@*             @foreach (var category in Model.Categories) *@
-@*             { *@
-@*                 var selected = category == Model.SelectedCategory; *@
-@*                 <option value="@category" selected="@selected">@category</option> *@
-@*             } *@
+            @foreach (var category in Model.Categories)
+            {
+                <p>@category</p>
+                <input type="hidden" value="@category" name="categories[]">
+            }
         </div>
 
         <div class="note__main__category-input-wrapper">
             <label class="note__main__category-input-label" for="category-input">Category name:</label>
-            <input class="note__main__category-input form-control" type="text" name="category" id="category-name" aria-describedby="category-name">
+            <input class="note__main__category-input form-control" type="text" id="category-name" aria-describedby="category-name">
         </div>
         <div class="note__main__button-group">
             <button class="btn btn-primary" id="add-category-button">Add</button>
             <button class="btn btn-primary" id="remove-category-button">Remove</button>
         </div>
-        <input type="submit"/>
+        <input type="hidden" asp-for="Id"/>
     </main>
+    <div class="note__main__cta-buttons">
+        <input class="btn btn-primary note__main__cta-button" type="submit" value="Save"/>
+        <a class="btn btn-warning note__main__cta-button" asp-controller="Home" asp-action="Index" type="submit">Back</a>
+    </div>
 </form>
