@@ -1,4 +1,4 @@
-@model NoteModel
+@model NoteViewModel
 
 @{
     ViewData["Title"] = "New note";
@@ -25,10 +25,13 @@
         <textarea class="note__main__content-input form-control" type="text"  aria-describedby="note-content" asp-for="Content"></textarea>
         <label class="note__main__category-label" for="category-list">In Categories:</label>
         <div name="category" id="category-list" class="note__main__category-list form-control">
-            @foreach (var category in Model.Categories)
+            @if (Model.Categories != null)
             {
-                <p>@category</p>
-                <input type="hidden" value="@category" name="categories[]">
+                @foreach (var category in Model.Categories)
+                {
+                    <p>@(category.Name)</p>
+                    <input type="hidden" value="@category" name="categories[]">
+                }
             }
         </div>
 

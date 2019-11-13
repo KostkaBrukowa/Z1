@@ -1,55 +1,99 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Z01.Controllers;
 using Z01.Exceptions;
 using Z01.Models;
-using Z01.Repositories;
+using Z01.Models.Category;
 
 namespace Z01.services
 {
     public class NoteService
     {
-        private readonly NoteRepository _noteRepository = new NoteRepository();
+//        private readonly NoteRepository _noteRepository = new NoteRepository();
+        private readonly NoteContext _noteContext;
+        private readonly CategoryContext _categoryContext;
+        private readonly NoteCategoryContext _noteCategoryContext;
 
-        private static bool IsTitleUnique(NoteModel note, List<NoteModel> notes)
+        public NoteService(NoteContext noteContext, CategoryContext categoryContext,
+            NoteCategoryContext noteCategoryContext)
         {
-            return !notes.Exists(it =>
-                string.Equals(it.Title, note.Title, StringComparison.CurrentCultureIgnoreCase) && it.Id != note.Id);
+            _noteContext = noteContext;
+            _categoryContext = categoryContext;
+            _noteCategoryContext = noteCategoryContext;
         }
 
-        private void UpdateNote(NoteModel note, List<NoteModel> notes)
+        private bool IsTitleUnique(NoteModel noteModel)
         {
-            if (!notes.Exists(it => it.Id == note.Id))
+            var note = _noteContext.NoteItems.FirstOrDefault((it) => it.Title == noteModel.Title);
+
+            return note == null || noteModel.Id == note.Id;
+        }
+
+        private async Task<bool> UpdateNote(NoteModel note, string[] categories)
+        {
+            if (!IsTitleUnique(note))
+            {
+                throw new TitleNotUniqueException();
+            }
+
+            var noteToUpdate = _noteContext.NoteItems.FirstOrDefault(it => it.Id == note.Id);
+
+            if (note == null)
             {
                 throw new EntityNotFoundException();
             }
 
-            if (!IsTitleUnique(note, notes))
+//            _noteContext.Update(noteModel);
+            noteToUpdate.Title = note.Title;
+            noteToUpdate.Content = note.Content;
+            noteToUpdate.Markdown = note.Markdown;
+
+            foreach (var categoryName in categories)
             {
-                throw new TitleNotUniqueException();
+                var category = _categoryContext.CategoryItems.SingleOrDefault(t => t.Name == categoryName);
+
+                if (category == null)
+                {
+                    category = new CategoryModel(categoryName);
+                    _categoryContext.CategoryItems.Add(category);
+                }
+
+                _noteCategoryContext.NoteCategories.Add(new NoteCategory()
+                    {Category = category, Note = noteToUpdate, CategoryId = category.Id, NoteId = noteToUpdate.Id});
             }
 
-            _noteRepository.RemoveNote(note.Id);
-            _noteRepository.SaveNoteToDatabase(note);
+            await _noteCategoryContext.SaveChangesAsync();
+            await _categoryContext.SaveChangesAsync();
+            await _noteContext.SaveChangesAsync();
+
+            return true;
         }
 
-        private void SaveNewNote(NoteModel note, List<NoteModel> notes)
+        private async Task<bool> SaveNewNote(NoteModel note, string[] categories)
         {
-            if (!IsTitleUnique(note, notes))
+            if (!IsTitleUnique(note))
             {
                 throw new TitleNotUniqueException();
             }
 
-            _noteRepository.SaveNoteToDatabase(new NoteModel(note, Guid.NewGuid().ToString()));
+            _noteContext.NoteItems.Add(note);
+            await _noteContext.SaveChangesAsync();
+
+            return true;
         }
 
         public Tuple<int, List<NoteModel>> GetAllNotes(NoteFilterModel filterModel)
         {
-            var notes = _noteRepository.LoadNotes();
+            var notes = _noteContext.NoteItems;
+
             var filteredNotes = notes
-                .Where(it =>
-                    filterModel.SelectedCategory == null || it.Categories.Contains(filterModel.SelectedCategory.ToLower()))
+//                .Where(it =>
+//                    filterModel.SelectedCategory == null ||
+//                    it.Categories.First((it1) => it1.Name == filterModel.SelectedCategory) != null)
                 .Where(it => it.CreationDate >= filterModel.From)
                 .Where(it => it.CreationDate <= filterModel.To)
                 .ToList();
@@ -61,31 +105,38 @@ namespace Z01.services
             return new Tuple<int, List<NoteModel>>(filteredNotes.Count, paginatedNotes);
         }
 
-        public NoteModel GetNoteById(string id)
+        public async Task<NoteModel> GetNoteById(string id)
         {
-            var notes = _noteRepository.LoadNotes();
+            var todoItem = await _noteContext.NoteItems.FindAsync(id);
 
-            return notes.Find(it => it.Id == id);
+            return todoItem;
         }
 
-        public void SaveNote(NoteModel note)
+        public Task<bool> SaveNote(NoteModel note, string[] categories)
         {
-            var notes = _noteRepository.LoadNotes();
-
-            if (note.Id == null)
-                SaveNewNote(note, notes);
-            else
-                UpdateNote(note, notes);
+            return note.Id == null ? SaveNewNote(note, categories) : UpdateNote(note, categories);
         }
 
-        public void RemoveNote(string id)
+        public async Task<bool> RemoveNote(string id)
         {
-            var removeSucceed = _noteRepository.RemoveNote(id);
+            var todoItem = await _noteContext.NoteItems.FindAsync(id);
 
-            if (!removeSucceed)
+            if (todoItem == null)
             {
                 throw new EntityNotFoundException();
             }
+
+            _noteContext.NoteItems.Remove(todoItem);
+            await _noteContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public HashSet<CategoryModel> GetAllCategories()
+        {
+            var categories = _categoryContext.CategoryItems.ToHashSet();
+
+            return categories;
         }
     }
 }

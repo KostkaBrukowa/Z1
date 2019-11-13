@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Z01.Exceptions;
 using Z01.Models;
@@ -7,26 +9,37 @@ namespace Z01.Controllers
 {
     public class NoteController : Controller
     {
-        private readonly NoteService _noteService = new NoteService();
+        private readonly NoteService _noteService;
 
-        public IActionResult Index(string id)
+        public NoteController(NoteContext noteContext, CategoryContext categoryContext, NoteCategoryContext noteCategoryContext)
         {
-            var note = _noteService.GetNoteById(id);
+            _noteService = new NoteService(noteContext, categoryContext, noteCategoryContext);
+        }
 
-            return note == null ? View(new NoteModel()) : View(note);
+        public async Task<IActionResult> Index(string id)
+        {
+            try
+            {
+                var note = await _noteService.GetNoteById(id);
+                return View(new NoteViewModel(note));
+            }
+            catch (ArgumentNullException)
+            {
+                return View(new NoteViewModel(new NoteModel()));
+            }
         }
 
         [HttpPost]
-        public IActionResult Save(NoteModel note)
+        public async Task<IActionResult> Save(NoteModel note, string[] categories)
         {
             if (!ModelState.IsValid)
             {
-                return View("Index", note);
+                return View("Index", new NoteViewModel(note));
             }
 
             try
             {
-                _noteService.SaveNote(note);
+                await _noteService.SaveNote(note, categories);
 
                 return Redirect("/");
             }
@@ -34,7 +47,7 @@ namespace Z01.Controllers
             {
                 ModelState.AddModelError("Title", "Title is not unique");
 
-                return View("Index", note);
+                return View("Index", new NoteViewModel(note));
             }
             catch (EntityNotFoundException)
             {
@@ -42,11 +55,11 @@ namespace Z01.Controllers
             }
         }
 
-        public IActionResult Remove(string id)
+        public async Task<IActionResult> Remove(string id)
         {
             try
             {
-                _noteService.RemoveNote(id);
+                await _noteService.RemoveNote(id);
 
                 return Redirect("/");
             }

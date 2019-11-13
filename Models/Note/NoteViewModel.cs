@@ -6,46 +6,30 @@ using Z01.Models.Category;
 
 namespace Z01.Models
 {
-    public class NoteModel
+    public class NoteViewModel
     {
-        public NoteModel()
+        public NoteViewModel(NoteModel note)
         {
-            Id = null;
-            CreationDate = DateTime.Now;
-            Title = "";
-            Content = "";
-            Markdown = false;
-            NoteCategories = new List<NoteCategory>();
-        }
-
-        public NoteModel(NoteModel note)
-        {
-            CreationDate = DateTime.Now;
+            Id = note.Id;
+            CreationDate = note.CreationDate;
             Title = note.Title;
-            Markdown = note.Markdown;
             Content = note.Content;
-        }
+            Markdown = note.Markdown;
+            Categories = new HashSet<CategoryModel>();
 
-        public NoteModel(NoteModel note, string id) : this(note)
-        {
-            Id = id;
-        }
-
-        public NoteModel(string id, DateTime creationDate, string title, bool markdown, string content)
-        {
-            Id = id;
-            CreationDate = creationDate;
-            Title = title;
-            Markdown = markdown;
-            Content = content;
+            foreach (var noteCategory in note.NoteCategories)
+            {
+                if (noteCategory.NoteId == note.Id)
+                {
+                    Categories.Add(noteCategory.Category);
+                }
+            }
         }
 
         public string Id { get; set; }
-
         public DateTime CreationDate { get; set; }
 
         [Required]
-//        [Index(IsUnique=true)]
         [StringLength(60, MinimumLength = 3)]
         public string Title { get; set; }
 
@@ -55,7 +39,7 @@ namespace Z01.Models
         [StringLength(1060, MinimumLength = 3)]
         public string Content { get; set; }
 
-        public ICollection<NoteCategory> NoteCategories { get; set; }
+        public ICollection<CategoryModel> Categories { get; set; }
 //
 //        public override string ToString()
 //        {

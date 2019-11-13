@@ -2,16 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Z01.Models.Category;
 
 namespace Z01.Models
 {
     public class IndexViewModel
     {
-        public IndexViewModel() : this(new NoteFilterModel(), new List<string>(), new List<NoteModel>(), 0)
+        public IndexViewModel() : this(new NoteFilterModel(), new List<CategoryModel>(), new List<NoteModel>(), 0)
         {
         }
 
-        public IndexViewModel(NoteFilterModel filters, IEnumerable<string> categories, List<NoteModel> notes, int maxPage)
+        public IndexViewModel(NoteFilterModel filters, IEnumerable<CategoryModel> categories, List<NoteModel> notes,
+            int maxPage)
         {
             Filters = filters.TrimPages(maxPage);
             Notes = notes;
@@ -20,7 +22,7 @@ namespace Z01.Models
 
             foreach (var category in categories)
             {
-                Categories.Add(new SelectListItem {Value = category, Text = category});
+                Categories.Add(new SelectListItem {Value = category.Name, Text = category.Name});
             }
         }
 
