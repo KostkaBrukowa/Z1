@@ -18,10 +18,8 @@ document.addEventListener('DOMContentLoaded', function (evt) {
         });
 
         if (!categoryExists) {
-            categoryList.innerHTML += `
-            <p>${value}</p>
-            <input type="hidden" value="${value}" name="categories[]">
-        `
+            categoryList.innerHTML += 
+                ` <p>${value}</p> <input type="hidden" value="${value}" name="categories[]"> `
         }
         categoryNameInput.value = '';
     };

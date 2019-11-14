@@ -1,18 +1,15 @@
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Z01.Models.Category;
 
 namespace Z01.Models
 {
     public class IndexViewModel
     {
-        public IndexViewModel() : this(new NoteFilterModel(), new List<CategoryModel>(), new List<NoteModel>(), 0)
+        public IndexViewModel() : this(new NoteFilterModel(), new List<Category>(), new List<Note>(), 0)
         {
         }
 
-        public IndexViewModel(NoteFilterModel filters, IEnumerable<CategoryModel> categories, List<NoteModel> notes,
+        public IndexViewModel(NoteFilterModel filters, IEnumerable<Category> categories, List<Note> notes,
             int maxPage)
         {
             Filters = filters.TrimPages(maxPage);
@@ -30,7 +27,7 @@ namespace Z01.Models
 
         public NoteFilterModel Filters { get; set; }
 
-        public List<NoteModel> Notes { get; set; }
+        public List<Note> Notes { get; set; }
 
         public int MaxPage { get; set; }
     }

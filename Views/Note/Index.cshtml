@@ -30,7 +30,7 @@
                 @foreach (var category in Model.Categories)
                 {
                     <p>@(category.Name)</p>
-                    <input type="hidden" value="@category" name="categories[]">
+                    <input type="hidden" value="@category.Name" name="categories[]">
                 }
             }
         </div>
@@ -43,7 +43,8 @@
             <button class="btn btn-primary" id="add-category-button">Add</button>
             <button class="btn btn-primary" id="remove-category-button">Remove</button>
         </div>
-        <input type="hidden" asp-for="Id"/>
+        <input type="hidden" asp-for="NoteId"/>
+        <div style="font-size: 30px"> id   !! @Model.NoteId</div>
     </main>
     <div class="note__main__cta-buttons">
         <input class="btn btn-primary note__main__cta-button" type="submit" value="Save"/>

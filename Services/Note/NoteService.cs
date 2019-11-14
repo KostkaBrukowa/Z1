@@ -2,93 +2,101 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Z01.Controllers;
 using Z01.Exceptions;
 using Z01.Models;
-using Z01.Models.Category;
 
 namespace Z01.services
 {
     public class NoteService
     {
-//        private readonly NoteRepository _noteRepository = new NoteRepository();
-        private readonly NoteContext _noteContext;
-        private readonly CategoryContext _categoryContext;
-        private readonly NoteCategoryContext _noteCategoryContext;
+        private readonly MyContext _myContext;
 
-        public NoteService(NoteContext noteContext, CategoryContext categoryContext,
-            NoteCategoryContext noteCategoryContext)
+        public NoteService(MyContext myContext)
         {
-            _noteContext = noteContext;
-            _categoryContext = categoryContext;
-            _noteCategoryContext = noteCategoryContext;
+            _myContext = myContext;
         }
 
-        private bool IsTitleUnique(NoteModel noteModel)
+        private bool IsTitleUnique(Note noteModel)
         {
-            var note = _noteContext.NoteItems.FirstOrDefault((it) => it.Title == noteModel.Title);
+            var note = _myContext.Notes.FirstOrDefault((it) => it.Title == noteModel.Title);
 
-            return note == null || noteModel.Id == note.Id;
+            return note == null || noteModel.NoteID == note.NoteID;
         }
 
-        private async Task<bool> UpdateNote(NoteModel note, string[] categories)
+        private void UpdateCategories(Note noteToUpdate, string[] categories)
+        {
+            foreach (var categoryName in categories)
+            {
+                if (noteToUpdate.NoteCategories.Any(it => it.Category.Name == categoryName)) continue;
+
+                var category = _myContext.Categories.SingleOrDefault(t => t.Name == categoryName);
+
+                if (category == null)
+                {
+                    category = new Category {Name = categoryName};
+                    _myContext.Categories.Add(category);
+                }
+
+                noteToUpdate.NoteCategories.Add(new NoteCategory()
+                {
+                    Category = category,
+                    Note = noteToUpdate,
+                    CategoryID = category.CategoryID,
+                    NoteID = noteToUpdate.NoteID
+                });
+            }
+        }
+
+        private async Task<bool> UpdateNote(Note note, string[] categories)
         {
             if (!IsTitleUnique(note))
             {
                 throw new TitleNotUniqueException();
             }
 
-            var noteToUpdate = _noteContext.NoteItems.FirstOrDefault(it => it.Id == note.Id);
+            var noteToUpdate = _myContext.Notes
+                .Include(it => it.NoteCategories)
+                .ThenInclude(it => it.Category)
+                .FirstOrDefault(it => it.NoteID == note.NoteID);
 
-            if (note == null)
+            if (noteToUpdate == null)
             {
                 throw new EntityNotFoundException();
             }
 
-//            _noteContext.Update(noteModel);
             noteToUpdate.Title = note.Title;
             noteToUpdate.Content = note.Content;
             noteToUpdate.Markdown = note.Markdown;
 
-            foreach (var categoryName in categories)
-            {
-                var category = _categoryContext.CategoryItems.SingleOrDefault(t => t.Name == categoryName);
+            UpdateCategories(noteToUpdate, categories);
 
-                if (category == null)
-                {
-                    category = new CategoryModel(categoryName);
-                    _categoryContext.CategoryItems.Add(category);
-                }
-
-                _noteCategoryContext.NoteCategories.Add(new NoteCategory()
-                    {Category = category, Note = noteToUpdate, CategoryId = category.Id, NoteId = noteToUpdate.Id});
-            }
-
-            await _noteCategoryContext.SaveChangesAsync();
-            await _categoryContext.SaveChangesAsync();
-            await _noteContext.SaveChangesAsync();
+            await _myContext.SaveChangesAsync();
 
             return true;
         }
 
-        private async Task<bool> SaveNewNote(NoteModel note, string[] categories)
+        private async Task<bool> SaveNewNote(Note note, string[] categories)
         {
             if (!IsTitleUnique(note))
             {
                 throw new TitleNotUniqueException();
             }
 
-            _noteContext.NoteItems.Add(note);
-            await _noteContext.SaveChangesAsync();
+            note.NoteCategories = new List<NoteCategory>();
+            _myContext.Notes.Add(note);
+
+            UpdateCategories(note, categories);
+
+            await _myContext.SaveChangesAsync();
 
             return true;
         }
 
-        public Tuple<int, List<NoteModel>> GetAllNotes(NoteFilterModel filterModel)
+        public Tuple<int, List<Note>> GetAllNotes(NoteFilterModel filterModel)
         {
-            var notes = _noteContext.NoteItems;
+            var notes = _myContext.Notes.Include(it => it.NoteCategories);
 
             var filteredNotes = notes
 //                .Where(it =>
@@ -102,39 +110,41 @@ namespace Z01.services
                 .Take(HomeController.PAGE_SIZE)
                 .ToList();
 
-            return new Tuple<int, List<NoteModel>>(filteredNotes.Count, paginatedNotes);
+            return new Tuple<int, List<Note>>(filteredNotes.Count, paginatedNotes);
         }
 
-        public async Task<NoteModel> GetNoteById(string id)
+        public Note GetNoteById(string id)
         {
-            var todoItem = await _noteContext.NoteItems.FindAsync(id);
+            var todoItem = _myContext.Notes
+                .Include(it => it.NoteCategories)
+                .ThenInclude(it => it.Category);
 
-            return todoItem;
+            return todoItem.FirstOrDefault(it => it.NoteID == id);
         }
 
-        public Task<bool> SaveNote(NoteModel note, string[] categories)
+        public Task<bool> SaveNote(Note note, string[] categories)
         {
-            return note.Id == null ? SaveNewNote(note, categories) : UpdateNote(note, categories);
+            return note.NoteID == null ? SaveNewNote(note, categories) : UpdateNote(note, categories);
         }
 
         public async Task<bool> RemoveNote(string id)
         {
-            var todoItem = await _noteContext.NoteItems.FindAsync(id);
+            var todoItem = await _myContext.Notes.FindAsync(id);
 
             if (todoItem == null)
             {
                 throw new EntityNotFoundException();
             }
 
-            _noteContext.NoteItems.Remove(todoItem);
-            await _noteContext.SaveChangesAsync();
+            _myContext.Notes.Remove(todoItem);
+            await _myContext.SaveChangesAsync();
 
             return true;
         }
 
-        public HashSet<CategoryModel> GetAllCategories()
+        public HashSet<Category> GetAllCategories()
         {
-            var categories = _categoryContext.CategoryItems.ToHashSet();
+            var categories = _myContext.Categories.ToHashSet();
 
             return categories;
         }

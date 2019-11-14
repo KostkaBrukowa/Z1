@@ -50,14 +50,14 @@
                 <span>@($"{note.CreationDate:yyyy-MM-dd}")</span>
                 <span>@note.Title</span>
                 <div class="notes-list__button-wrapper">
-                    <a asp-controller="Note" asp-action="Index" asp-route-id="@note.Id" class="btn bg-info">
+                    <a asp-controller="Note" asp-action="Index" asp-route-id="@note.NoteID" class="btn bg-info">
                         Edit
                     </a>
                 </div>
                 <div class="notes-list__button-wrapper">
                     <form asp-controller="Note" asp-action="Remove" method="POST">
                         <input type="submit" value="Delete" class="btn bg-danger"/>
-                        <input type="hidden" value="@note.Id" name="id"/>
+                        <input type="hidden" value="@note.NoteID" name="id"/>
                     </form>
                 </div>
             </div>

@@ -11,26 +11,26 @@ namespace Z01.Controllers
     {
         private readonly NoteService _noteService;
 
-        public NoteController(NoteContext noteContext, CategoryContext categoryContext, NoteCategoryContext noteCategoryContext)
+        public NoteController(MyContext myContext)
         {
-            _noteService = new NoteService(noteContext, categoryContext, noteCategoryContext);
+            _noteService = new NoteService(myContext);
         }
 
-        public async Task<IActionResult> Index(string id)
+        public IActionResult Index(string id)
         {
             try
             {
-                var note = await _noteService.GetNoteById(id);
-                return View(new NoteViewModel(note));
+                var note = _noteService.GetNoteById(id);
+                return View(new NoteViewModel(note ?? new Note()));
             }
             catch (ArgumentNullException)
             {
-                return View(new NoteViewModel(new NoteModel()));
+                return View(new NoteViewModel(new Note()));
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save(NoteModel note, string[] categories)
+        public async Task<IActionResult> Save(Note note, string[] categories)
         {
             if (!ModelState.IsValid)
             {

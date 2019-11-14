@@ -26,12 +26,12 @@ namespace Z01
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddDbContext<NoteContext>(opt =>
-                opt.UseInMemoryDatabase("NoteList"));
-            services.AddDbContext<CategoryContext>(opt =>
-                opt.UseInMemoryDatabase("CategoryList"));
-            services.AddDbContext<NoteCategoryContext>(opt =>
-                opt.UseInMemoryDatabase("NoteCategoryList"));
+            services.AddDbContext<MyContext>(opt =>
+                opt.UseInMemoryDatabase("AllList"));
+//            services.AddDbContext<CategoryContext>(opt =>
+//                opt.UseInMemoryDatabase("CategoryList"));
+//            services.AddDbContext<NoteCategoryContext>(opt =>
+//                opt.UseInMemoryDatabase("NoteCategoryList"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
