@@ -10,7 +10,7 @@ namespace Z01.Models
         public NoteViewModel(Note note)
         {
             NoteId = note.NoteID;
-            CreationDate = note.CreationDate;
+            CreationDate = note.NoteDate;
             Title = note.Title;
             Content = note.Content;
             Markdown = note.Markdown;
@@ -24,7 +24,7 @@ namespace Z01.Models
             }
         }
 
-        public string NoteId { get; set; }
+        public int NoteId { get; set; }
         public DateTime CreationDate { get; set; }
 
         [Required]

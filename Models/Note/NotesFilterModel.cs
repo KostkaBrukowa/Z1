@@ -19,7 +19,7 @@ namespace Z01.Models
         public NoteFilterModel(DateTime from, DateTime to, string category, int page)
         {
             From = from == new DateTime() ? DateTime.Now.AddDays(-7) : from;
-            To = to == new DateTime() ? DateTime.Now : to;
+            To = to == new DateTime() ? DateTime.Now.AddDays(1) : to;
             SelectedCategory = category;
             Page = page < 0 ? 0 : page;
         }

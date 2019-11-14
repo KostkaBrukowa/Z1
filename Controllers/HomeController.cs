@@ -28,18 +28,14 @@ namespace Z01.Controllers
             {
                 // Create a new TodoItem if collection is empty,
                 // which means you can't delete all TodoItems.
-//                var category = new Category{Name = "Category1"};
-//                _myContext.Categories.Add(category)
                 _myContext.Notes.Add(new Note {Markdown = true, Content = "test content", Title = "title"});
                 _myContext.SaveChanges();
-            }    
-            var (allNotesCount, notes) = _noteService.GetAllNotes(filters);
-            var categories = _noteService.GetAllCategories();
-            var maxPages = Math.Ceiling((double) ((allNotesCount - 1) / (PAGE_SIZE)));
+            }
 
-            return View(
-                new IndexViewModel(filters, categories, notes, (int) maxPages
-                ));
+            var (maxPages, allNotesCount, notes) = _noteService.GetAllNotes(filters);
+            var categories = _noteService.GetAllCategories();
+
+            return View(new IndexViewModel(filters, categories, notes, maxPages));
         }
 
         public IActionResult Error()

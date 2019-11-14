@@ -47,6 +47,12 @@ namespace Z01.services
                     NoteID = noteToUpdate.NoteID
                 });
             }
+
+            var categoriesToDelete = noteToUpdate.NoteCategories
+                .Where(noteCategory => categories.All(it => it != noteCategory.Category.Name))
+                .ToList();
+
+            categoriesToDelete.ForEach(it => noteToUpdate.NoteCategories.Remove(it));
         }
 
         private async Task<bool> UpdateNote(Note note, string[] categories)
@@ -94,26 +100,32 @@ namespace Z01.services
             return true;
         }
 
-        public Tuple<int, List<Note>> GetAllNotes(NoteFilterModel filterModel)
+        public Tuple<int, int, List<Note>> GetAllNotes(NoteFilterModel filterModel)
         {
-            var notes = _myContext.Notes.Include(it => it.NoteCategories);
+            var notes = _myContext.Notes
+                .Include(it => it.NoteCategories)
+                .ThenInclude(it => it.Category);
 
             var filteredNotes = notes
-//                .Where(it =>
-//                    filterModel.SelectedCategory == null ||
-//                    it.Categories.First((it1) => it1.Name == filterModel.SelectedCategory) != null)
-                .Where(it => it.CreationDate >= filterModel.From)
-                .Where(it => it.CreationDate <= filterModel.To)
+                .Where(it =>
+                    filterModel.SelectedCategory == null ||
+                    it.NoteCategories.FirstOrDefault(_ => _.Category.Name == filterModel.SelectedCategory) != null)
+                .Where(it => it.NoteDate >= filterModel.From)
+                .Where(it => it.NoteDate <= filterModel.To)
                 .ToList();
+
+            var maxPages = (int) Math.Ceiling((double) ((filteredNotes.Count - 1) / (HomeController.PAGE_SIZE)));
+            filterModel.TrimPages(maxPages);
+
             var paginatedNotes = filteredNotes
                 .Skip(filterModel.Page * HomeController.PAGE_SIZE)
                 .Take(HomeController.PAGE_SIZE)
                 .ToList();
 
-            return new Tuple<int, List<Note>>(filteredNotes.Count, paginatedNotes);
+            return new Tuple<int, int, List<Note>>(maxPages, filteredNotes.Count, paginatedNotes);
         }
 
-        public Note GetNoteById(string id)
+        public Note GetNoteById(int id)
         {
             var todoItem = _myContext.Notes
                 .Include(it => it.NoteCategories)
@@ -124,10 +136,10 @@ namespace Z01.services
 
         public Task<bool> SaveNote(Note note, string[] categories)
         {
-            return note.NoteID == null ? SaveNewNote(note, categories) : UpdateNote(note, categories);
+            return note.NoteID == 0 ? SaveNewNote(note, categories) : UpdateNote(note, categories);
         }
 
-        public async Task<bool> RemoveNote(string id)
+        public async Task<bool> RemoveNote(int id)
         {
             var todoItem = await _myContext.Notes.FindAsync(id);
 
@@ -144,7 +156,15 @@ namespace Z01.services
 
         public HashSet<Category> GetAllCategories()
         {
-            var categories = _myContext.Categories.ToHashSet();
+            var noteCategories = _myContext.NoteCategories
+                .Include(it => it.Category)
+                .Include(it => it.Note)
+                .Where(it => it.Note != null)
+                .ToList();
+
+            var categories = noteCategories
+                .Select(it => it.Category)
+                .ToHashSet();
 
             return categories;
         }

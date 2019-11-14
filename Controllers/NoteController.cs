@@ -16,7 +16,7 @@ namespace Z01.Controllers
             _noteService = new NoteService(myContext);
         }
 
-        public IActionResult Index(string id)
+        public IActionResult Index(int id)
         {
             try
             {
@@ -55,13 +55,13 @@ namespace Z01.Controllers
             }
         }
 
-        public async Task<IActionResult> Remove(string id)
+        public async Task<IActionResult> Remove(int id, NoteFilterModel filters)
         {
             try
             {
                 await _noteService.RemoveNote(id);
 
-                return Redirect("/");
+                return RedirectToAction("Index", "Home", filters);
             }
             catch (EntityNotFoundException)
             {

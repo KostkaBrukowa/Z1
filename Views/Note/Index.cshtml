@@ -29,7 +29,7 @@
             {
                 @foreach (var category in Model.Categories)
                 {
-                    <p>@(category.Name)</p>
+                    <p style="cursor: pointer">@(category.Name)</p>
                     <input type="hidden" value="@category.Name" name="categories[]">
                 }
             }

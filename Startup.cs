@@ -28,6 +28,8 @@ namespace Z01
             services.AddMvc();
             services.AddDbContext<MyContext>(opt =>
                 opt.UseInMemoryDatabase("AllList"));
+//            services.AddDbContext<MyContext>(options =>
+//                options.UseSqlServer(Configuration.GetConnectionString("MyContext"))); 
 //            services.AddDbContext<CategoryContext>(opt =>
 //                opt.UseInMemoryDatabase("CategoryList"));
 //            services.AddDbContext<NoteCategoryContext>(opt =>

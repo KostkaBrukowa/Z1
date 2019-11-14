@@ -18,10 +18,23 @@ document.addEventListener('DOMContentLoaded', function (evt) {
         });
 
         if (!categoryExists) {
-            categoryList.innerHTML += 
-                ` <p>${value}</p> <input type="hidden" value="${value}" name="categories[]"> `
+            const categoryListItem = document.createElement('p');
+            const hiddenCategoryInput = document.createElement('input');
+            categoryListItem.innerHTML = `${value}`;
+            categoryListItem.style.cursor = `pointer`;
+
+            hiddenCategoryInput.value = value;
+            hiddenCategoryInput.name = 'categories[]';
+            hiddenCategoryInput.type = 'hidden';
+
+            categoryList.appendChild(categoryListItem);
+            categoryList.appendChild(hiddenCategoryInput);
         }
         categoryNameInput.value = '';
+
+        categoryList.childNodes.forEach((node) => {
+            if (node.tagName === 'P') node.addEventListener('click', () => categoryNameInput.value = node.innerHTML)
+        })
     };
 
     const removeCategory = (event) => {
@@ -48,4 +61,8 @@ document.addEventListener('DOMContentLoaded', function (evt) {
 
     addCategoryButton.addEventListener('click', addCategory);
     removeCategoryButton.addEventListener('click', removeCategory);
+    categoryList.childNodes.forEach((node) => {
+        console.log(node.tagName);
+        if (node.tagName === 'P') node.addEventListener('click', () => categoryNameInput.value = node.innerHTML)
+    })
 });

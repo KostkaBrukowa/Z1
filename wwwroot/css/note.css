@@ -59,6 +59,7 @@
 .note__main__content-input {
     align-self: stretch;
     grid-area: content-area;
+    resize: none;
 }
 
 .note__main__category-label {

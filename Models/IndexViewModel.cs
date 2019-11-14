@@ -12,7 +12,7 @@ namespace Z01.Models
         public IndexViewModel(NoteFilterModel filters, IEnumerable<Category> categories, List<Note> notes,
             int maxPage)
         {
-            Filters = filters.TrimPages(maxPage);
+            Filters = filters;
             Notes = notes;
             MaxPage = maxPage;
             Categories = new List<SelectListItem>();

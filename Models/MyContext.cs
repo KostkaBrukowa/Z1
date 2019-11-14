@@ -34,12 +34,13 @@ namespace Z01.Models
 
     public class Note
     {
-        public string NoteID { get; set; }
-        public DateTime CreationDate { get; set; } = DateTime.Now;
+        public int NoteID { get; set; }
+        public DateTime NoteDate { get; set; } = DateTime.Now;
         public bool Markdown { get; set; }
         [Required]
-        [MinLength(3)]
+        [MinLength(1), MaxLength(64)]
         public string Title { get; set; }
+        [MinLength(1)]
         public string Content { get; set; }
 
         public List<NoteCategory> NoteCategories { get; set; }
@@ -47,7 +48,9 @@ namespace Z01.Models
 
     public class Category
     {
-        public string CategoryID { get; set; }
+        public int CategoryID { get; set; }
+        [Required]
+        [MinLength(1), MaxLength(64)]
         public string Name { get; set; }
 
         public List<NoteCategory> NoteCategories { get; set; }
@@ -55,10 +58,10 @@ namespace Z01.Models
 
     public class NoteCategory
     {
-        public string NoteID { get; set; }
+        public int NoteID { get; set; }
         public Note Note { get; set; }
 
-        public string CategoryID { get; set; }
+        public int CategoryID { get; set; }
         public Category Category { get; set; }
     }
 }

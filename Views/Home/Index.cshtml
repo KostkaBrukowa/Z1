@@ -47,7 +47,7 @@
         @foreach (var note in Model.Notes)
         {
             <div class="notes-list__row">
-                <span>@($"{note.CreationDate:yyyy-MM-dd}")</span>
+                <span>@($"{note.NoteDate:yyyy-MM-dd}")</span>
                 <span>@note.Title</span>
                 <div class="notes-list__button-wrapper">
                     <a asp-controller="Note" asp-action="Index" asp-route-id="@note.NoteID" class="btn bg-info">
@@ -58,6 +58,10 @@
                     <form asp-controller="Note" asp-action="Remove" method="POST">
                         <input type="submit" value="Delete" class="btn bg-danger"/>
                         <input type="hidden" value="@note.NoteID" name="id"/>
+                        <input type="hidden" value="@(currentParams["Filters.From"])" name="Filters.From"/>
+                        <input type="hidden" value="@(currentParams["Filters.To"])" name="Filters.To"/>
+                        <input type="hidden" value="@(currentParams["Filters.Page"])" name="Filters.Page"/>
+                        <input type="hidden" value="@(currentParams["Filters.SelectedCategory"])" name="Filters.SelectedCategory"/>
                     </form>
                 </div>
             </div>
