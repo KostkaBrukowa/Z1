@@ -11,8 +11,8 @@ using Z01.Models;
 namespace Z01.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20191115094931_NewTimestamp")]
-    partial class NewTimestamp
+    [Migration("20191115100428_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,10 +29,6 @@ namespace Z01.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64);
-
-                    b.Property<byte[]>("TestTimestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
 
                     b.HasKey("CategoryID");
 

@@ -29,10 +29,6 @@ namespace Z01.Migrations
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<byte[]>("TestTimestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
-
                     b.HasKey("CategoryID");
 
                     b.ToTable("Categories");
@@ -48,6 +44,10 @@ namespace Z01.Migrations
                     b.Property<bool>("Markdown");
 
                     b.Property<DateTime>("NoteDate");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<string>("Title")
                         .IsRequired()

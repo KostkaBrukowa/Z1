@@ -42,7 +42,8 @@ namespace Z01.Models
         public string Title { get; set; }
         [MinLength(1)]
         public string Content { get; set; }
-
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
         public List<NoteCategory> NoteCategories { get; set; }
     }
 
@@ -52,8 +53,6 @@ namespace Z01.Models
         [Required]
         [MinLength(1), MaxLength(64)]
         public string Name { get; set; }
-        [Timestamp]
-        public byte[] TestTimestamp { get; set; }
 
         public List<NoteCategory> NoteCategories { get; set; }
     }

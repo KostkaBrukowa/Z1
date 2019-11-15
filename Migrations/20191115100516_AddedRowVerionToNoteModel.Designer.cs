@@ -11,8 +11,8 @@ using Z01.Models;
 namespace Z01.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20191115094641_Initial")]
-    partial class Initial
+    [Migration("20191115100516_AddedRowVerionToNoteModel")]
+    partial class AddedRowVerionToNoteModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -45,6 +45,10 @@ namespace Z01.Migrations
                     b.Property<bool>("Markdown");
 
                     b.Property<DateTime>("NoteDate");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<string>("Title")
                         .IsRequired()
