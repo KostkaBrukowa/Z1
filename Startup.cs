@@ -26,10 +26,10 @@ namespace Z01
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddDbContext<MyContext>(opt =>
-                opt.UseInMemoryDatabase("AllList"));
-//            services.AddDbContext<MyContext>(options =>
-//                options.UseSqlServer(Configuration.GetConnectionString("MyContext"))); 
+            // services.AddDbContext<MyContext>(opt =>
+            //     opt.UseInMemoryDatabase("AllList"));
+           services.AddDbContext<MyContext>(options =>
+               options.UseSqlServer(Configuration.GetConnectionString("MyContext"))); 
 //            services.AddDbContext<CategoryContext>(opt =>
 //                opt.UseInMemoryDatabase("CategoryList"));
 //            services.AddDbContext<NoteCategoryContext>(opt =>

@@ -18,7 +18,7 @@ namespace Z01.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NoteCategory>()
-                .HasKey(t => new {NoteId = t.NoteID, CategoryId = t.CategoryID});
+                .HasKey(t => new { NoteId = t.NoteID, CategoryId = t.CategoryID });
 
             modelBuilder.Entity<NoteCategory>()
                 .HasOne(pt => pt.Note)
@@ -52,6 +52,8 @@ namespace Z01.Models
         [Required]
         [MinLength(1), MaxLength(64)]
         public string Name { get; set; }
+        [Timestamp]
+        public byte[] TestTimestamp { get; set; }
 
         public List<NoteCategory> NoteCategories { get; set; }
     }

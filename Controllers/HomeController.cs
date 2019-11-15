@@ -24,13 +24,13 @@ namespace Z01.Controllers
 
         public IActionResult Index(NoteFilterModel filters)
         {
-            if (!_myContext.Notes.Any())
-            {
-                // Create a new TodoItem if collection is empty,
-                // which means you can't delete all TodoItems.
-                _myContext.Notes.Add(new Note {Markdown = true, Content = "test content", Title = "title"});
-                _myContext.SaveChanges();
-            }
+            // if (!_myContext.Notes.Any())
+            // {
+            //     // Create a new TodoItem if collection is empty,
+            //     // which means you can't delete all TodoItems.
+            //     _myContext.Notes.Add(new Note {Markdown = true, Content = "test content", Title = "title"});
+            //     _myContext.SaveChanges();
+            // }
 
             var (maxPages, allNotesCount, notes) = _noteService.GetAllNotes(filters);
             var categories = _noteService.GetAllCategories();
