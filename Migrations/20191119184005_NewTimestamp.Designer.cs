@@ -11,14 +11,14 @@ using Z01.Models;
 namespace Z01.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20191115100428_Initial")]
-    partial class Initial
+    [Migration("20191119184005_NewTimestamp")]
+    partial class NewTimestamp
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.0.2-rtm-10010")
+                .HasAnnotation("ProductVersion", "2.0.2-rtm-10011")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Z01.Models.Category", b =>
@@ -32,7 +32,7 @@ namespace Z01.Migrations
 
                     b.HasKey("CategoryID");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("Z01.Models.Note", b =>
@@ -46,13 +46,17 @@ namespace Z01.Migrations
 
                     b.Property<DateTime>("NoteDate");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(64);
 
                     b.HasKey("NoteID");
 
-                    b.ToTable("Notes");
+                    b.ToTable("Note");
                 });
 
             modelBuilder.Entity("Z01.Models.NoteCategory", b =>
@@ -65,7 +69,7 @@ namespace Z01.Migrations
 
                     b.HasIndex("CategoryID");
 
-                    b.ToTable("NoteCategories");
+                    b.ToTable("NoteCategory");
                 });
 
             modelBuilder.Entity("Z01.Models.NoteCategory", b =>

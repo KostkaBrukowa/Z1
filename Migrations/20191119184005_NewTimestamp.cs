@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace Z01.Migrations
 {
-    public partial class AddedRowVerionToNoteModel : Migration
+    public partial class NewTimestamp : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<byte[]>(
                 name: "RowVersion",
-                table: "Notes",
+                table: "Note",
                 rowVersion: true,
                 nullable: true);
         }
@@ -19,7 +19,7 @@ namespace Z01.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "RowVersion",
-                table: "Notes");
+                table: "Note");
         }
     }
 }

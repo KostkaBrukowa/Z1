@@ -5,12 +5,12 @@ using System.Collections.Generic;
 
 namespace Z01.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Categories",
+                name: "Category",
                 columns: table => new
                 {
                     CategoryID = table.Column<int>(nullable: false)
@@ -19,11 +19,11 @@ namespace Z01.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.CategoryID);
+                    table.PrimaryKey("PK_Category", x => x.CategoryID);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Notes",
+                name: "Note",
                 columns: table => new
                 {
                     NoteID = table.Column<int>(nullable: false)
@@ -35,11 +35,11 @@ namespace Z01.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Notes", x => x.NoteID);
+                    table.PrimaryKey("PK_Note", x => x.NoteID);
                 });
 
             migrationBuilder.CreateTable(
-                name: "NoteCategories",
+                name: "NoteCategory",
                 columns: table => new
                 {
                     NoteID = table.Column<int>(nullable: false),
@@ -47,37 +47,37 @@ namespace Z01.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NoteCategories", x => new { x.NoteID, x.CategoryID });
+                    table.PrimaryKey("PK_NoteCategory", x => new { x.NoteID, x.CategoryID });
                     table.ForeignKey(
-                        name: "FK_NoteCategories_Categories_CategoryID",
+                        name: "FK_NoteCategory_Category_CategoryID",
                         column: x => x.CategoryID,
-                        principalTable: "Categories",
+                        principalTable: "Category",
                         principalColumn: "CategoryID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_NoteCategories_Notes_NoteID",
+                        name: "FK_NoteCategory_Note_NoteID",
                         column: x => x.NoteID,
-                        principalTable: "Notes",
+                        principalTable: "Note",
                         principalColumn: "NoteID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_NoteCategories_CategoryID",
-                table: "NoteCategories",
+                name: "IX_NoteCategory_CategoryID",
+                table: "NoteCategory",
                 column: "CategoryID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "NoteCategories");
+                name: "NoteCategory");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Category");
 
             migrationBuilder.DropTable(
-                name: "Notes");
+                name: "Note");
         }
     }
 }
