@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Z01.Exceptions;
 using Z01.Models;
 using Z01.services;
@@ -49,9 +50,15 @@ namespace Z01.Controllers
 
                 return View("Index", new NoteViewModel(note));
             }
+            catch (ConcurrencyException)
+            {
+                ModelState.AddModelError("Title", "Another user has updated note before you");
+
+                return View("Index", new NoteViewModel(note));
+            }
             catch (EntityNotFoundException)
             {
-                return StatusCode(400);
+                return Redirect("/");
             }
         }
 

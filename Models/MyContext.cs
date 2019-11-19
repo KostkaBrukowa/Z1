@@ -21,6 +21,9 @@ namespace Z01.Models
       modelBuilder.Entity<NoteCategory>()
           .HasKey(t => new { NoteId = t.NoteID, CategoryId = t.CategoryID });
 
+      modelBuilder.Entity<Note>().Property(_ => _.RowVersion).IsRowVersion();
+      modelBuilder.Entity<Note>().Property(_ => _.RowVersion).IsConcurrencyToken();
+
       modelBuilder.Entity<NoteCategory>()
           .HasOne(pt => pt.Note)
           .WithMany(p => p.NoteCategories)

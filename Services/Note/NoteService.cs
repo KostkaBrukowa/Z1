@@ -72,6 +72,11 @@ namespace Z01.services
                 throw new EntityNotFoundException();
             }
 
+            if (!noteToUpdate.RowVersion.SequenceEqual(note.RowVersion))
+            {
+                throw new  ConcurrencyException();
+            }
+
             noteToUpdate.Title = note.Title;
             noteToUpdate.Content = note.Content;
             noteToUpdate.Markdown = note.Markdown;

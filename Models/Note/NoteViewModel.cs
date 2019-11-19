@@ -10,6 +10,7 @@ namespace Z01.Models
         public NoteViewModel(Note note)
         {
             NoteId = note.NoteID;
+            RowVersion = note.RowVersion;
             CreationDate = note.NoteDate;
             Title = note.Title;
             Content = note.Content;
@@ -25,6 +26,7 @@ namespace Z01.Models
         }
 
         public int NoteId { get; set; }
+        public byte[] RowVersion { get; set; }
         public DateTime CreationDate { get; set; }
 
         [Required]
