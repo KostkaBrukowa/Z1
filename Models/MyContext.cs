@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
+
+using Microsoft.Extensions.Logging;
 
 namespace Z01.Models
 {
@@ -18,11 +21,13 @@ namespace Z01.Models
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-      modelBuilder.Entity<NoteCategory>()
-          .HasKey(t => new { NoteId = t.NoteID, CategoryId = t.CategoryID });
-
       modelBuilder.Entity<Note>().Property(_ => _.RowVersion).IsRowVersion();
       modelBuilder.Entity<Note>().Property(_ => _.RowVersion).IsConcurrencyToken();
+      modelBuilder.Entity<Note>().HasIndex(_ => _.Title).IsUnique();
+      modelBuilder.Entity<Category>().HasIndex(_ => _.Name).IsUnique();
+
+      modelBuilder.Entity<NoteCategory>()
+          .HasKey(t => new { NoteId = t.NoteID, CategoryId = t.CategoryID });
 
       modelBuilder.Entity<NoteCategory>()
           .HasOne(pt => pt.Note)
