@@ -23,6 +23,11 @@ namespace Z01.Models
     {
       modelBuilder.Entity<Note>().Property(_ => _.RowVersion).IsRowVersion();
       modelBuilder.Entity<Note>().Property(_ => _.RowVersion).IsConcurrencyToken();
+      modelBuilder.Entity<Note>().HasIndex(_ => _.Title).IsUnique();
+      modelBuilder.Entity<Category>().HasIndex(_ => _.Name).IsUnique();
+
+      modelBuilder.Entity<NoteCategory>()
+          .HasKey(t => new { NoteId = t.NoteID, CategoryId = t.CategoryID });
 
       modelBuilder.Entity<Note>().HasIndex(_ => _.Title).IsUnique();
       modelBuilder.Entity<Category>().HasIndex(_ => _.Name).IsUnique();
@@ -53,7 +58,7 @@ namespace Z01.Models
     [MinLength(1), MaxLength(64)]
     public string Title { get; set; }
     [MinLength(1)]
-    public string Content { get; set; }
+    public string Description { get; set; }
     [Timestamp]
     public byte[] RowVersion { get; set; }
     public List<NoteCategory> NoteCategories { get; set; }

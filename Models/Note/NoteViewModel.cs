@@ -13,7 +13,7 @@ namespace Z01.Models
             RowVersion = note.RowVersion;
             CreationDate = note.NoteDate;
             Title = note.Title;
-            Content = note.Content;
+            Content = note.Description;
             Markdown = note.Markdown;
             Categories = new HashSet<Category>();
 

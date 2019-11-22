@@ -63,7 +63,7 @@ namespace Z01.services
       _myContext.Entry(noteToUpdate).Property("RowVersion").OriginalValue = note.RowVersion;
 
       noteToUpdate.Title = note.Title;
-      noteToUpdate.Content = note.Content;
+      noteToUpdate.Description = note.Description;
       noteToUpdate.Markdown = note.Markdown;
 
       UpdateCategories(noteToUpdate, categories);
