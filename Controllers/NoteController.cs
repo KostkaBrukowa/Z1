@@ -44,13 +44,7 @@ namespace Z01.Controllers
 
                 return Redirect("/");
             }
-            catch (TitleNotUniqueException)
-            {
-                ModelState.AddModelError("Title", "Title is not unique");
-
-                return View("Index", new NoteViewModel(note));
-            }
-            catch (ConcurrencyException)
+            catch (DbUpdateConcurrencyException)
             {
                 ModelState.AddModelError("Title", "Another user has updated note before you");
 
