@@ -7,7 +7,7 @@
 <form asp-controller="Note" asp-action="Save" method="POST">
     <div class="error-container">
         <span class="error-label" asp-validation-for="Title"> </span>
-        <span class="error-label" asp-validation-for="Content"> </span>
+        <span class="error-label" asp-validation-for="Description"> </span>
         <span class="error-label" asp-validation-for="Categories"> </span>
     </div>
     <main class="note__main">
@@ -22,7 +22,7 @@
         </div>
 
         <label class="note__main__content-label m-r-sm" for="content">Content of the note:</label>
-        <textarea class="note__main__content-input form-control" type="text"  aria-describedby="note-content" asp-for="Content"></textarea>
+        <textarea class="note__main__content-input form-control" type="text"  aria-describedby="note-content" asp-for="Description"></textarea>
         <label class="note__main__category-label" for="category-list">In Categories:</label>
         <div name="category" id="category-list" class="note__main__category-list form-control">
             @if (Model.Categories != null)

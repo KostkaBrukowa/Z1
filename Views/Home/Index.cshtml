@@ -12,6 +12,9 @@
 }
 
 <main class="main m-y-lg p-lg">
+    <div class="error-container">
+        <span class="error-label">@Model.Error</span>
+    </div>
     <form asp-controller="Home" asp-action="Index" method="GET">
         <section class="main__filter-container p-y-md p-lg">
             <div class="main__date">
@@ -46,6 +49,8 @@
 
         @foreach (var note in Model.Notes)
         {
+            <!-- var rowVersion = Encoding.ToBase64CharArray(note.RowVersion); -->
+            <!-- var rowVersion = string.Join("", note.RowVersion); -->
             <div class="notes-list__row">
                 <span>@($"{note.NoteDate:yyyy-MM-dd}")</span>
                 <span>@note.Title</span>
@@ -58,6 +63,7 @@
                     <form asp-controller="Note" asp-action="Remove" method="POST">
                         <input type="submit" value="Delete" class="btn bg-danger"/>
                         <input type="hidden" value="@note.NoteID" name="id"/>
+                        <input type="hidden" asp-for="@note.RowVersion" name="rowVersion" />
                         <input type="hidden" value="@(currentParams["Filters.From"])" name="Filters.From"/>
                         <input type="hidden" value="@(currentParams["Filters.To"])" name="Filters.To"/>
                         <input type="hidden" value="@(currentParams["Filters.Page"])" name="Filters.Page"/>

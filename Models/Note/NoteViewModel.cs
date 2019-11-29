@@ -13,7 +13,7 @@ namespace Z01.Models
             RowVersion = note.RowVersion;
             CreationDate = note.NoteDate;
             Title = note.Title;
-            Content = note.Description;
+            Description = note.Description;
             Markdown = note.Markdown;
             Categories = new HashSet<Category>();
 
@@ -37,7 +37,7 @@ namespace Z01.Models
 
         [Required]
         [StringLength(1060, MinimumLength = 3)]
-        public string Content { get; set; }
+        public string Description { get; set; }
 
         public ICollection<Category> Categories { get; set; }
     }

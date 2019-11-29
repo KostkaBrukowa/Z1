@@ -124,13 +124,16 @@ namespace Z01.services
       return note.NoteID == 0 ? SaveNewNote(note, categories) : UpdateNote(note, categories);
     }
 
-    public async Task<bool> RemoveNote(int id)
+    public async Task<bool> RemoveNote(int id, byte[] rowVersion)
     {
       var todoItem = await _myContext.Notes.FindAsync(id);
 
       if (todoItem == null)
       {
         throw new EntityNotFoundException();
+      }
+      if(!todoItem.RowVersion.SequenceEqual(rowVersion)){
+        throw new ConcurrencyException();
       }
 
       _myContext.Notes.Remove(todoItem);

@@ -22,7 +22,7 @@ namespace Z01.Controllers
             _noteService = new NoteService(myContext);
         }
 
-        public IActionResult Index(NoteFilterModel filters)
+        public IActionResult Index(NoteFilterModel filters, string error)
         {
             // if (!_myContext.Notes.Any())
             // {
@@ -35,7 +35,7 @@ namespace Z01.Controllers
             var (maxPages, allNotesCount, notes) = _noteService.GetAllNotes(filters);
             var categories = _noteService.GetAllCategories();
 
-            return View(new IndexViewModel(filters, categories, notes, maxPages));
+            return View(new IndexViewModel(filters, categories, notes, maxPages, error));
         }
 
         public IActionResult Error()
